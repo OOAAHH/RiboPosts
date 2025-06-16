@@ -1,0 +1,76 @@
+---
+layout: default
+---
+{% include custom_styles/aptamer_styles.html %}
+
+<div class="post">
+  <header class="post-header">
+    <h1>{{ page.title }}</h1>
+    <p class="meta">{{ page.date | date: "%b %-d, %Y" }}{% if page.author %} • {{ page.author }}{% endif %}</p>
+  </header>
+
+  <article class="post-content">
+    {% include custom_styles/aptamer_navigation.html %}
+    {{ content }}
+  </article>
+</div>
+
+<!-- 确保自动检测section-title标题 -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // 强制刷新导航菜单
+    const refreshNavigation = function() {
+      const headers = document.querySelectorAll('.section-title[id]');
+      const navItemsContainer = document.getElementById('navItems');
+      
+      if (headers.length > 0 && navItemsContainer) {
+        // 清空现有导航项
+        navItemsContainer.innerHTML = '';
+        
+        // 为每个标题创建导航项
+        headers.forEach(header => {
+          const id = header.getAttribute('id');
+          const title = header.textContent.trim();
+          
+          if (id && title) {
+            const listItem = document.createElement('li');
+            listItem.className = 'side-nav-item';
+            
+            const link = document.createElement('a');
+            link.href = '#' + id;
+            link.textContent = title;
+            
+            listItem.appendChild(link);
+            navItemsContainer.appendChild(listItem);
+          }
+        });
+        
+        // 重新绑定点击事件
+        const navItems = document.querySelectorAll('.side-nav-item a');
+        navItems.forEach(anchor => {
+          anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+            
+            if (targetElement) {
+              targetElement.scrollIntoView({
+                behavior: 'smooth'
+              });
+              // 关闭导航菜单
+              const navBall = document.getElementById('navBall');
+              const sideNav = document.getElementById('sideNav');
+              const overlay = document.getElementById('overlay');
+              navBall.classList.remove('active');
+              sideNav.classList.remove('active');
+              overlay.classList.remove('active');
+            }
+          });
+        });
+      }
+    };
+    
+    // 确保导航在页面完全加载后刷新
+    setTimeout(refreshNavigation, 500);
+  });
+</script> 
